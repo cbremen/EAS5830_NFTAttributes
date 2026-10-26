@@ -35,7 +35,7 @@ def get_ape_info(ape_id):
     token_uri = contract.functions.tokenURI(ape_id).call()
 
     path = token_uri.replace("ipfs://", "")
-    response = requests.get("https://ipfs.io/ipfs" + path, timeout = 30)
+    response = requests.get("https://ipfs.io/ipfs/" + path, timeout = 30)
     metadata = response.json()
 
     data["image"] = metadata["image"]
