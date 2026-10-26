@@ -2,6 +2,7 @@ from web3 import Web3
 from web3.providers.rpc import HTTPProvider
 import requests
 import json
+import time
 
 bayc_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 contract_address = Web3.to_checksum_address(bayc_address)
@@ -21,7 +22,6 @@ web3 = Web3(provider)
 
 contract = web3.eth.contract(address=contract_address, abi = abi)
 
-
 def get_ape_info(ape_id):
     assert isinstance(ape_id, int), f"{ape_id} is not an int"
     assert 0 <= ape_id, f"{ape_id} must be at least 0"
@@ -35,8 +35,27 @@ def get_ape_info(ape_id):
     token_uri = contract.functions.tokenURI(ape_id).call()
 
     path = token_uri.replace("ipfs://", "")
-    response = requests.get("https://ipfs.io/ipfs/" + path, timeout = 30)
-    metadata = response.json()
+    IPFS_gateways = [
+    "https://ipfs.io/ipfs/",
+    "https://gateway.pinata.cloud/ipfs/",
+    "https://dweb.link/ipfs/",
+    "https://cloudflare-ipfs.com/ipfs/",
+    ]
+    
+    metadata = None
+
+    for attempt in range(3):
+        for gateway in IPFS_gateways:
+            try:
+                response = requests.get(gateway + path, timeout = 30)
+                response.raise_for_status()
+                metadata = response.json()
+                break
+            except Exception:
+                continue
+        if metadata is not None:
+            break
+        time.sleep(1)
 
     data["image"] = metadata["image"]
     for attr in metadata["attributes"]:
