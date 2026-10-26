@@ -15,7 +15,7 @@ with open('ape_abi.json', 'r') as f:
 
 ############################
 # Connect to an Ethereum node
-api_url = "https://eth-mainnet.g.alchemy.com/v2/alch__PYWnEk9s9xeRs9qsr4YK""  # YOU WILL NEED TO PROVIDE THE URL OF AN ETHEREUM NODE
+api_url = "https://eth-mainnet.g.alchemy.com/v2/alch__PYWnEk9s9xeRs9qsr4YK"  # YOU WILL NEED TO PROVIDE THE URL OF AN ETHEREUM NODE
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
 
